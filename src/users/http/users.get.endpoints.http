@@ -1,0 +1,3 @@
+## REQUEST get users
+
+GET http://localhost:8000/users/23/sdf?limit=10&page=2
