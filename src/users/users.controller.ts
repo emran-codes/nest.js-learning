@@ -1,31 +1,47 @@
 import {
   Body,
   Controller,
+  DefaultValuePipe,
   Get,
-  Headers,
-  Ip,
   Param,
+  ParseIntPipe,
+  Patch,
   Post,
   Query,
-  Req,
 } from '@nestjs/common';
-import { Request } from 'express';
+import { CreateUserDto } from './dtos/createUser.dto';
+import { UserParam } from './dtos/getUserParam.dto';
+import { PatchUserDto } from './dtos/patchUser.dto';
 
 @Controller('/users')
 export class UsersController {
-  @Get('/:id{/:optional}')
+  @Get('{/:id}')
   public getUsers(
-    @Param() params: any,
-    @Param('id') id: any,
-    @Query('limit') limit: any,
-    @Query() query: any,
+    @Param() params: UserParam,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
   ) {
-    console.log(params, query, id, limit);
+    console.log(
+      'id',
+      params,
+      typeof params,
+      'limit',
+      limit,
+      typeof limit,
+      'page',
+      typeof page,
+      page,
+    );
     return 'user api route!';
   }
   @Post()
-  public postUser(@Req() request: any, @Headers() header: any, @Ip() ip: any) {
-    console.log(request, header, ip);
+  public postUser(@Body() createUserDto: CreateUserDto) {
+    console.log(createUserDto);
+    return 'User has been created successfully!dfdf';
+  }
+  @Patch('{/:id}')
+  public patchUser(@Body() createUserDto: PatchUserDto) {
+    console.log(createUserDto);
     return 'User has been created successfully!dfdf';
   }
 }

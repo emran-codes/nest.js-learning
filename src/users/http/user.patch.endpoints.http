@@ -1,0 +1,9 @@
+## REQUEST patch user
+
+PATCH http://localhost:8000/users/12
+Content-Type: application/json
+
+{
+    "firstName": "Emran",
+    "lastName": "Janan"
+}
