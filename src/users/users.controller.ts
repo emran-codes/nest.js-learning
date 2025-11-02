@@ -1,17 +1,17 @@
 import {
   Body,
   Controller,
-  DefaultValuePipe,
-  Delete,
+  // DefaultValuePipe,
+  // Delete,
   Get,
-  Param,
-  ParseIntPipe,
+  // Param,
+  // ParseIntPipe,
   Patch,
   Post,
-  Query,
+  // Query,
 } from '@nestjs/common';
 import { CreateUserDto } from './dtos/createUser.dto';
-import { UserParam } from './dtos/getUserParam.dto';
+// import { UserParam } from './dtos/getUserParam.dto';
 import { PatchUserDto } from './dtos/patchUser.dto';
 import { UserServices } from './providers/user.services';
 
@@ -19,17 +19,12 @@ import { UserServices } from './providers/user.services';
 export class UsersController {
   constructor(private readonly userService: UserServices) {}
   @Get('{/:id}')
-  public getUsers(
-    @Param() params: UserParam,
-    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
-    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
-  ) {
-    return this.userService.getAllUsers(params, limit, page);
+  public getUsers() {
+    return this.userService.getAllUsers();
   }
   @Post()
-  public postUser(@Body() createUserDto: CreateUserDto) {
-    console.log(createUserDto);
-    return 'User has been created successfully!dfdf';
+  public async postUser(@Body() createUserDto: CreateUserDto) {
+    return await this.userService.createUser(createUserDto);
   }
   @Patch('{/:id}')
   public patchUser(@Body() createUserDto: PatchUserDto) {

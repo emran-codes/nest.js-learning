@@ -1,0 +1,9 @@
+## REQUEST post user
+
+POST http://localhost:8000/posts
+Content-Type: application/json
+
+{
+    "title": "Emran",
+    "contest": "Janan",
+}

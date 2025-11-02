@@ -1,5 +1,6 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { PostsService } from './services/posts.service';
+// import { PostEntity } from './post.entity';
 
 @Controller('posts')
 export class PostsController {
@@ -7,5 +8,9 @@ export class PostsController {
   @Get('{/:userId}')
   getAllPosts(@Param('userId') userId: string) {
     return this.postServices.findAll(userId);
+  }
+  @Post()
+  createPost(@Body() post: any) {
+    return this.postServices.createPost(post);
   }
 }
