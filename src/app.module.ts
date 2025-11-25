@@ -8,8 +8,8 @@ import { PostsService } from './posts/services/posts.service';
 import { AuthModule } from './auth/auth.module';
 // import {} from 'nest';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from './users/user.entity';
-// import { PostEntity } from './posts/post.entity';
+import { TagsModule } from './tags/tags.module';
+import { MetaOptionsModule } from './meta-options/meta-options.module';
 
 @Module({
   imports: [
@@ -25,12 +25,15 @@ import { User } from './users/user.entity';
         password: 'nestlearn',
         database: 'nestlearn',
         // entities: [__dirname + '/**/*.entity{.ts,.js}'],
-        entities: [User],
+        // entities: [User],
+        autoLoadEntities: true,
         synchronize: true,
       }),
     }),
+    TagsModule,
+    MetaOptionsModule,
   ],
-  controllers: [AppController, PostsController],
-  providers: [AppService, PostsService],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule {}

@@ -1,0 +1,9 @@
+POST http://localhost:8000/tags
+Content-Type: application/json
+
+{
+    "name": "metaOptions-2",
+    "slug": "hello-2",
+    "description": "this is the first description!"
+
+}

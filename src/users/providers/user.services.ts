@@ -13,17 +13,16 @@ export class UserServices {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
   ) {}
-  getAllUsers = () => {
+  getAllUsers = async () => {
     const isAuth = this.authService.isAuth();
     console.log(isAuth);
-    return [
-      { email: 'emran@gmail.com', name: 'emran' },
-      { email: 'mobbin@gmail.com', name: 'mobbin' },
-      { email: 'mustafa@gmail.com', name: 'mustafa' },
-    ];
+    const user = await this.userRepository.find();
+
+    return user;
   };
-  findUserById = (id: string) => {
-    return { userId: id, email: 'emran@gmail.com', name: 'emran' };
+  public findUserById = async (id: number) => {
+    const user = await this.userRepository.findOneBy({ id: Number(id) });
+    return { userId: user };
   };
   public async createUser(createUserDto: CreateUserDto) {
     const user = await this.userRepository.findOne({

@@ -1,22 +1,82 @@
 import { Injectable } from '@nestjs/common';
 import { UserServices } from 'src/users/providers/user.services';
-// import { PostEntity } from '../post.entity';
-// import { Repository } from 'typeorm';
-// import { InjectRepository } from '@nestjs/typeorm';
+import { DeepPartial, Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Post } from '../posts.entity';
+import { MetaOptions } from 'src/meta-options/meta-option.entity';
+import { CreatePostDto } from '../dtos/create-post.dto';
+import { Tag } from 'src/tags/tag.entity';
+import { TagsService } from 'src/tags/provider/tags/tags.service';
+import { PatchPostDto } from '../dtos/patch-post.dto';
 @Injectable()
 export class PostsService {
   constructor(
     private readonly userService: UserServices,
-    // @InjectRepository(PostEntity)
-    // private readonly postRepository: Repository<PostEntity>,
+    @InjectRepository(Post)
+    private readonly postRepository: Repository<Post>,
+
+    @InjectRepository(MetaOptions)
+    private readonly metaOptionsRepository: Repository<MetaOptions>,
+    private readonly tagService: TagsService,
   ) {}
   findAll(userId: string) {
-    const user = this.userService.findUserById(userId);
-    return [{ user, title: 'help me', description: 'this is hte psot' }];
+    return this.postRepository.find();
   }
-  createPost(post: any) {
-    // let newPost = this.postRepository.create(post);
-    // newPost = await this.postRepository.save(newPost);
-    return 'newPost';
+  async create(createPostDto: CreatePostDto) {
+    console.log(
+      '__________________$$$$$$$$$$$$$$$$$$$$$$$$_______________________',
+    );
+    const user = await this.userService.findUserById(createPostDto.authorId);
+    const tags = await this.tagService.findMultipleTags(createPostDto.tags);
+    const newPost = this.postRepository.create({
+      ...createPostDto,
+      author: user?.userId,
+      tags: tags,
+    } as DeepPartial<Post>);
+    console.log(newPost);
+    console.log(
+      '__________________$$$$$$$$$$$$$$$$$$$$$$$$_______________________',
+    );
+    return await this.postRepository.save(newPost);
+    // return newPost;
+  }
+  public async update(patchPostDto: PatchPostDto) {
+    const tags = patchPostDto.tags
+      ? await this.tagService.findMultipleTags(patchPostDto.tags)
+      : undefined;
+
+    const post = await this.postRepository.findOneBy({ id: patchPostDto?.id });
+    if (post) {
+      post.title = patchPostDto?.title ?? post.title;
+      post.content = patchPostDto?.content ?? post.content;
+      post.status = patchPostDto?.status ?? post.status;
+      post.postType = patchPostDto?.postType ?? post.postType;
+      post.slug = patchPostDto?.slug ?? post.slug;
+      post.featuredImageUrl =
+        patchPostDto?.featuredImageUrl ?? post.featuredImageUrl;
+      post.publishOn = patchPostDto?.publishOn ?? post.publishOn;
+      post.tags = tags;
+      console.log('EKDFJKDFDK', post);
+      // return 'HEELKDFJ';
+
+      return await this.postRepository.save(post);
+    }
+  }
+  public async delete(id: number) {
+    // const post = await this.postRepository.findOneBy({ id })!;
+    // console.log(post, post?.id, 'metaOptions', post?.metaOptions?.id, id);
+    // await this.postRepository.delete(id);
+    // if (post?.metaOptions?.id) {
+    //   await this.metaOptionsRepository.delete(post?.metaOptions?.id);
+    // }
+    // const inversePost = await this.metaOptionsRepository.find({
+    //   where: { id: post?.metaOptions?.id },
+    //   relations: {
+    //     post: true,
+    //   },
+    // });
+    // console.log(inversePost);
+    const deletedPost = await this.postRepository.delete(id);
+    return { success: true, post: 'post.id', data: deletedPost };
   }
 }

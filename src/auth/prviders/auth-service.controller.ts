@@ -8,9 +8,9 @@ export class AuthServiceController {
     private readonly userService: UserServices,
   ) {}
   public login(email?: string, password?: string, id?: string) {
-    const user = this.userService.findUserById('12');
-    console.log(user);
-    return user;
+    // const user = this.userService.findUserById();
+    // console.log(user);
+    return 'user';
   }
 
   public isAuth() {
