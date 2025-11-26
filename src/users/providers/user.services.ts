@@ -5,6 +5,7 @@ import { User } from '../user.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserDto } from '../dtos/createUser.dto';
+import { ConfigService } from '@nestjs/config';
 @Injectable()
 export class UserServices {
   constructor(
@@ -12,10 +13,13 @@ export class UserServices {
     private readonly authService: AuthServiceController,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+
+    private readonly configService: ConfigService,
   ) {}
   getAllUsers = async () => {
-    const isAuth = this.authService.isAuth();
-    console.log(isAuth);
+    const s3Bucket = this.configService.get('S3_BUCKET');
+    console.log(s3Bucket);
+    // const isAuth = this.authService.isAuth();
     const user = await this.userRepository.find();
 
     return user;
