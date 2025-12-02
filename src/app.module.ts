@@ -2,17 +2,15 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
-import { PostsController } from './posts/posts.controller';
 import { PostsModule } from './posts/posts.module';
-import { PostsService } from './posts/services/posts.service';
 import { AuthModule } from './auth/auth.module';
-// import {} from 'nest';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TagsModule } from './tags/tags.module';
 import { MetaOptionsModule } from './meta-options/meta-options.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import appConfig from './config/app.config';
 import databaseConfig from './config/database.config';
+
 const ENV = process.env.NODE_ENV;
 @Module({
   imports: [
@@ -34,8 +32,6 @@ const ENV = process.env.NODE_ENV;
         username: configService.get('database.user'),
         password: configService.get('database.password'),
         database: configService.get('database.database'),
-        // entities: [__dirname + '/**/*.entity{.ts,.js}'],
-        // entities: [User],
         autoLoadEntities: configService.get('database.autoLoadEntities'),
         synchronize: configService.get('database.synchronize'),
       }),

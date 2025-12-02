@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  RequestTimeoutException,
+} from '@nestjs/common';
 import { UserServices } from 'src/users/providers/user.services';
 import { DeepPartial, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -41,12 +45,17 @@ export class PostsService {
     // return newPost;
   }
   public async update(patchPostDto: PatchPostDto) {
-    const tags = patchPostDto.tags
-      ? await this.tagService.findMultipleTags(patchPostDto.tags)
-      : undefined;
+    try {
+      const tags = patchPostDto.tags
+        ? await this.tagService.findMultipleTags(patchPostDto.tags)
+        : undefined;
 
-    const post = await this.postRepository.findOneBy({ id: patchPostDto?.id });
-    if (post) {
+      const post = await this.postRepository.findOneBy({
+        id: patchPostDto?.id,
+      });
+      if (!post) {
+        throw new BadRequestException('Post not found');
+      }
       post.title = patchPostDto?.title ?? post.title;
       post.content = patchPostDto?.content ?? post.content;
       post.status = patchPostDto?.status ?? post.status;
@@ -58,8 +67,25 @@ export class PostsService {
       post.tags = tags;
       console.log('EKDFJKDFDK', post);
       // return 'HEELKDFJ';
-
-      return await this.postRepository.save(post);
+      try {
+        return await this.postRepository.save(post);
+      } catch (error) {
+        throw new RequestTimeoutException(
+          'Unable to process your request as the moment please try again later.',
+          {
+            description: 'Error connecting to the database',
+            cause: error,
+          },
+        );
+      }
+    } catch (error) {
+      throw new RequestTimeoutException(
+        'Unable to process your request as the moment please try again later.',
+        {
+          description: 'Error connecting to the database',
+          cause: error,
+        },
+      );
     }
   }
   public async delete(id: number) {
