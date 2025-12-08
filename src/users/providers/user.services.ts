@@ -14,6 +14,8 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserDto } from '../dtos/createUser.dto';
 import { ConfigService } from '@nestjs/config';
+import { UserCreateManyProvider } from './user-create-many.provider';
+import { CreateManyUsersDto } from '../dtos/createManyUsers.dto';
 @Injectable()
 export class UserServices {
   constructor(
@@ -23,6 +25,8 @@ export class UserServices {
     private readonly userRepository: Repository<User>,
 
     private readonly configService: ConfigService,
+
+    private readonly userCreateManyProvider: UserCreateManyProvider,
   ) {}
   getAllUsers = async () => {
     throw new HttpException(
@@ -96,5 +100,8 @@ export class UserServices {
         },
       );
     }
+  }
+  public async createMany(createUsersDtos: CreateManyUsersDto) {
+    return this.userCreateManyProvider.createMany(createUsersDtos);
   }
 }
