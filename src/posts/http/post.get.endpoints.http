@@ -1,1 +1,4 @@
 GET http://localhost:8000/posts
+
+
+GET http://localhost:8000/posts/123?startDate=2023-01-01&endDate=2023-01-31&page=2&limit=1

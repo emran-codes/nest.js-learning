@@ -6,18 +6,23 @@ import {
   Param,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import { PostsService } from './services/posts.service';
 import { CreatePostDto } from './dtos/create-post.dto';
 import { PatchPostDto } from './dtos/patch-post.dto';
+import { GetPostsDto } from './dtos/get-post.dto';
 // import { PostEntity } from './post.entity';
 
 @Controller('posts')
 export class PostsController {
   constructor(private readonly postServices: PostsService) {}
   @Get('{/:userId}')
-  getAllPosts(@Param('userId') userId: string) {
-    return this.postServices.findAll(userId);
+  getAllPosts(
+    @Param('userId') userId: string,
+    @Query() getPostsDto: GetPostsDto,
+  ) {
+    return this.postServices.findAll(getPostsDto, userId);
   }
   @Post()
   public createPost(@Body() createPostDto: CreatePostDto) {
