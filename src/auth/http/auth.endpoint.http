@@ -1,2 +1,10 @@
 
 GET http://localhost:8000/auth
+
+POST http://localhost:8000/auth
+Content-Type: application/json
+
+{
+  "email": "emrand@example.com",
+  "password": "Password123d"
+}
